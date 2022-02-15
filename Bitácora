@@ -1,18 +1,29 @@
-# Biologia-de-sistemas-I
-## Bitácora de proyecto 
-### Enero 10 2022: Elección de tema 
-#### Posibles proyectos: 
-- Analisis de topologías redes
-- Analisis de algún modelo de regualción con ecuaciones
-- Modelo basado en datos ómicos
+\section{Bitácora}
+\subsubsection{Enero 10, 2022}\\
+Elección de tema:\\
+- Analisis de topologías redes\\
+- Analisis de algún modelo de regualción con ecuaciones\\
+- Modelo basado en datos ómicos\\
 - Optimización de modelos existentes
-- Modelado metabólico de algún fenómeno interesante 
-- Expresión on/off con cadenas de Markov 
-- Proponer circuito con algunas propiedades 
-- Reproducir analisis de algún artículo 
-- Automatas celulares para modelar ecosistemas 
-- Sistemas de Lotka- Volterra para modelar ecosistemas 
+- Modelado metabólico de algún fenómeno interesante\\
+- Expresión on/off con cadenas de Markov\\
+- Proponer circuito con algunas propiedades\\
+- Reproducir analisis de algún artículo\\
+- Automatas celulares para modelar ecosistemas\\
+- Sistemas de Lotka- Volterra para modelar ecosistemas\\
+
+\textbf{Idea de proyecto:} sistema genético de señalización de floración en agave con diferentes variables. O sea, qué señalizaciones hay molecularmente cuando el agave esta a punto de florecer. Ya que el tiempo es variable. 
+
+\subsection{Febrero 14, 2022}
+\textbf{Temas para introducción y justificación de proyecto:}\\
+- Industria y la interrumpción de llegar a una etapa adulta\\ 
+- Erosión genética\\
+- Comparación de sistema entre planta modelo y agave\\
+\textbf{Sugerencia del profe:}\\
+-Investigar si ya se secuenció el genoma completo del agave o partes de él (secuencias parciales)\\
+- Investigar especia cercana de agave (en caso de que no este secuenciado) y que ya esté completo\\
+- Usar blast (contra agave o su partiente o la secuencia parcial (no muy recomendado)) y ver si hay homologos en arabidopsis\\
+- Compararlo con ara. Una vez hecho eso simular si es que los genes están presentes\\
+- Buscar base de datos de regulacion en plantas.\\
 
 
-
-Idea de proyecto: sistema genetico de señalización de floración en agave con diferentes variables 
