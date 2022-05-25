@@ -30,3 +30,137 @@ Elección de tema:\\
 \textbf{Búsqueda de genoma del agave:}\\
 -Se accesó a NCBI en busca del genoma completo del agave tequilana (que será la especie que se estudiará en este proyecto).No se encontró alguna secuencia completa de la especie.\\
 Por consiguiente se optó por revisar los árboles taxonómicos de la familia de Asparagaceae.
+
+
+\textbf{Script usado en el proyecto:}\\
+#Agave Flowering Network and its Stochastic Boolean Model 
+
+library(Rlab)
+library(BoolNet)
+library(BoolFilter)
+library(devtools)
+install_github("mar_esther23/boolnet-perturb")
+library(dplyr)
+library(BoolNetPerturb)
+
+## Red estocástica de diferenciación de Agave Tequilana
+
+net = loadNetwork("try_2.net.txt")
+
+# Obtención de atractores (tabla)
+attr= getAttractors(net)
+attr
+
+# Obtención de atractores (gráfica)
+par(mfrow= c(1,1))
+plotAttractors(attr)
+
+
+# Obtención de matriz de Markov para ver cómo depende la diagonal del ruido (p=0.0, sin ruido)
+EL = epigeneticLandscape(net, p= 0.01)
+EL0 = epigeneticLandscape(net, p=0)
+
+# ¿Cuál es la probabilidad de pasar de un atractor a otro?
+EL[3,2] # Este parámetro puede ser modificado a conveniencia tanto la p, como las posiciones de los atractores
+
+### Tamaños de las cuencas de atracción... La cuenca es el espacio en el cuál pueden caer o no estados iniciales de la GRN
+basinsize =seq(1,10, by=1)
+
+for (ii in 1:length(basinsize)){
+  basinsize[ii] = attr$attractors[[ii]]$basinSize
+}
+
+n <- 13 # número de variables en el modelo 
+basinsize_norm <- basinsize/(2^n) #normalizar tamaños de las cuencas
+
+# añadir una diagonal (que se vea que hay relación lineal)
+# par (mfrow = c(1,1), din = c(1,1))
+
+plot(diag(as.matrix(EL)), basinsize_norm, pch =20, cex =1, 
+      xlab = "Probabilidad de permanecer en el atractator",
+      ylab = "Tamaño de cuenca normalizado", cex.lab =0.8,las=0.8)
+lines(x = c(min(diag(as.matrix(EL))), max(diag(as.matrix(EL)))),
+      y = c(min(basinsize_norm), max(basinsize_norm)))
+
+# Con esto no podemos asegurar que el tamaño de la cuenca influya en la estadía del estado inicial.
+# Para eso se plantea la determinación de la probabilidad de transición de un estado a otro. 
+
+
+# Gráfica entre tamaños de las cuencas y probabilidad de transición de atractor
+# j a atractor 1, j =1, 2, ..., 10
+
+plot(EL[,2], basinsize_norm, pch = 20, cex = 1,
+     xlab = "Probabilidad de transición",
+     ylab = "Tamaño de cuencua normalizado", cex.lab = 0.8)
+
+#Aquí se puede inferir que el tamaño de las cuencas no tiene que ver con estado de transición y que se ve afectada por el ruido. 
+
+####Y por último, con la matriz de Markov podemos determinar los estados finales representada por una serie de pasos. Por default el script tiene 100 pasos. 
+####Donde nos muestra diferentes gráficas cada vez que se corra. Entonces se interpreta como la probabilidad de que el atractor 1 termine en otro atractor.
+
+
+### Si empiezas en atractor 1 despues de 100 pasos, la P de permanencia 
+
+## Simular una cadena  de markov, 100 pasos
+P = as.matrix(EL)
+Nsteps <- 100 #numero de pasos
+pi0 = c (1,0,0,0,0,0,0,0,0,0) # Distribución de probabilidad inicial: x(0) = 
+v = vector ("numeric", Nsteps) # crea un vector vacío de tamaño (prealocar)
+r = length(pi0) # tamaño para la muestra de la distribución inicial
+
+v[1] = 1 #sample (r,l, prob=pi0)
+#La primer entrada del vector es una muestra de 1,2 r
+#La probabilidad de obtener cada uno de estos elementos está dada por pi0
+
+# Una sola realizacipon de la cadena 
+for (i in 2:Nsteps){
+  v[i] = sample (r, 1, prob = P[v[i-1],]) # Muestrea el nuevo valor:
+  # Selecciona el renglón en la matriz de probabildiades de que da el vector 
+  # De probabilidad de acuerdo con el edo. actual
+}
+
+# Mostrar Cadena 
+matplot(v, type = "l", lwd = 2.5, col = 3, xlab = "t", ylab = "Attrractor")
+
+
+####Ahora, vmamos a iterar varias veces, para sacar el promedio de
+####las veces que cada atractor fue visitado en cada paso de tiempo 
+####es decir, la probabilidad del atractor de i al tiempo N, para i = 1,2,3
+
+
+
+####Pero también se pueden controlar las probabilidades dependiendo del atractor
+
+iterations= 500 
+
+# Matriz para guardar las cadenas 
+v= matrix(nrow = iterations, ncol= Nsteps)
+v[,1] = rep (1, iterations)
+
+for (jj in 1: iterations){
+  for (i in 2: Nsteps){
+    v[jj, i] = sample(r, 1, prob =P[v[i-1],])
+  }
+}
+
+# Probabilidad de estar en atractor 1 al tiempo 75
+mean(v[, 90] == 10)
+
+plot(seq(1,100), colMeans(v[,] == 7), type = "l")
+
+
+
+
+
+
+
+Dicho script fue extraido de: Alvarez-Buylla ER, Chaos A, Aldana M, Benítez M, Cortes-Poza Y, Espinosa-Soto C,
+Hartasánchez DA, Lotto RB, Malkin D, Escalera Santos GJ, Padilla-Longoria P. Floral morphogenesis: stochastic explorations of 
+a gene network epigenetic landscape. PLoS One. 2008;3(11):e3626. doi: 10.1371/journal.pone.0003626. Epub 2008 Nov 3. PMID: 18978941; PMCID: PMC2572848.
+
+Y del curso de Biología de Sistemas de la UNAM 
+
+
+
+
+
